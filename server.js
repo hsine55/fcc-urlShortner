@@ -23,16 +23,13 @@ app.get('/*', function(req, res) {
       Url.findOne({long_url: longUrl}, function (err, doc){
         if (doc) { // we already have an entry for this url so just configure the res and send it
           dataObject.shortUrl = config.url + "/" + doc._id ;
-        } else { // create new entry
+        } else { // create new entry and get the short url
             dataObject.shortUrl = shortenUrl(longUrl) ;
         }
         res.send(dataObject);
       })
-
     }
   })
-  
-   
 })
 
 app.listen(process.env.PORT);
@@ -43,7 +40,7 @@ app.listen(process.env.PORT);
  * returns true if Url is valid, false otherwise.
  **/
 function isUrlValid(longUrl) {
-   var pattern = new RegExp('^https?://(www)\.[A-Za-z0-9_]+\.com$');
+  var pattern = new RegExp('^https?://(www)\.[A-Za-z0-9_]+\.com$');
   return pattern.test(longUrl);
 }
 
@@ -53,8 +50,8 @@ function isUrlValid(longUrl) {
  */
 function shortenUrl(longUrl) {
   var newUrl = Url({
-              long_url: longUrl
-            });
+                long_url: longUrl
+              });
   // save the new link in the db
   newUrl.save(function(err) {
     if (err){
